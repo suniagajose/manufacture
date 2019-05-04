@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_academic_employee,mrp.academic.employee,model_mrp_academic,base.group_user,1,0,0,0
+access_mrp_experience_employee,mrp.experience.employee,model_mrp_experience,base.group_user,1,0,0,0
+access_mrp_curriculum_employee,mrp_curriculum.employee,model_mrp_curriculum,base.group_user,1,0,0,0
+access_mrp_certification_employee,mrp.certification.employee,model_mrp_certification,base.group_user,1,0,0,0
+access_mrp_academic_officer,mrp.academic.officer,model_mrp_academic,mrp.group_mrp_user,1,1,1,1
+access_mrp_experience_officer,mrp.experience.officer,model_mrp_experience,mrp.group_mrp_user,1,1,1,1
+access_mrp_curriculum_officer,mrp_curriculum.officer,model_mrp_curriculum,mrp.group_mrp_user,1,1,1,1
+access_mrp_certification_officer,mrp.certification.officer,model_mrp_certification,mrp.group_mrp_user,1,1,1,1
