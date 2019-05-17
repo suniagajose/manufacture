@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_shift_session_tree" model="ir.ui.view">
+        <field name="name">mrp.session.tree</field>
+        <field name="model">mrp.session</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Shifts">
+                <field name="name"/>
+                <field name="shift_id"/>
+                <field name="workline_id"/>
+                <field name="user_id"/>
+                <field name="production_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_shift_session_form" model="ir.ui.view">
+        <field name="name">mrp.session.form</field>
+        <field name="model">mrp.session</field>
+        <field name="arch" type="xml">
+            <form string="Shift">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,produced,closed"/>
+                </header>
+                <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="shift_id" options="{'no_create': True}"/>
+                            <field name="workline_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="production_date"/>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Orders">
+                            <field name="production_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="production_id"/>
+                                    <field name="qty_to_produce"/>
+                                    <field name="qty_produced"/>
+                                </tree>
+                            </field>
+                        </page>
+		    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--
+        <record id="view_shift_search" model="ir.ui.view">
+            <field name="name">mrp.shift.search</field>
+            <field name="model">mrp.shift</field>
+            <field name="arch" type="xml">
+                <search string="Search Shifts">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="partner_id" string="Issued By"/>
+                    <group expand="0" name="group_by" string="Group By">
+                        <filter name="employee_id" string="Employee" context="{'group_by' : 'employee_id'}" />
+                        <filter name="partner_id" string="Issued By" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    -->
+
+    <record id="open_view_shift_session" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">mrp.session</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

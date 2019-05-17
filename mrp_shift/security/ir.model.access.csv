@@ -1,9 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_mrp_academic_employee,mrp.academic.employee,model_mrp_academic,base.group_user,1,0,0,0
-access_mrp_experience_employee,mrp.experience.employee,model_mrp_experience,base.group_user,1,0,0,0
-access_mrp_curriculum_employee,mrp_curriculum.employee,model_mrp_curriculum,base.group_user,1,0,0,0
-access_mrp_certification_employee,mrp.certification.employee,model_mrp_certification,base.group_user,1,0,0,0
-access_mrp_academic_officer,mrp.academic.officer,model_mrp_academic,mrp.group_mrp_user,1,1,1,1
-access_mrp_experience_officer,mrp.experience.officer,model_mrp_experience,mrp.group_mrp_user,1,1,1,1
-access_mrp_curriculum_officer,mrp_curriculum.officer,model_mrp_curriculum,mrp.group_mrp_user,1,1,1,1
-access_mrp_certification_officer,mrp.certification.officer,model_mrp_certification,mrp.group_mrp_user,1,1,1,1
+access_mrp_shift_user,mrp.shift.user,model_mrp_shift,mrp.group_mrp_user,1,0,0,0
+access_mrp_shift_manager,mrp.shift.manager,model_mrp_shift,mrp.group_mrp_manager,1,1,1,1
+access_mrp_session_user,mrp.session.user,model_mrp_session,mrp.group_mrp_user,1,0,0,0
+access_mrp_session_manager,mrp.session.manager,model_mrp_session,mrp.group_mrp_manager,1,1,1,1
+access_mrp_session_line_user,mrp.session.line.user,model_mrp_session_line,mrp.group_mrp_user,1,0,0,0
+access_mrp_session_line_manager,mrp.session.line.manager,model_mrp_session_line,mrp.group_mrp_manager,1,1,1,1
+access_mrp_workline_user,mrp.workline.user,model_mrp_workline,mrp.group_mrp_user,1,0,0,0
+access_mrp_workline_manager,mrp.workline.manager,model_mrp_workline,mrp.group_mrp_manager,1,1,1,1

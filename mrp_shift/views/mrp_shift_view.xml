@@ -5,21 +5,23 @@
         <field name="name">mrp.shift.kanban</field>
         <field name="model">mrp.shift</field>
         <field name="arch" type="xml">
-            <kanbancclass="o_kanban_dashboard o_mrp_kanban">
-                <field name="name"/>
-                <field name="session_ids"/>
-                <field name="current_session_id"/>
+            <kanban class="o_kanban_dashboard o_mrp_shift_kanban">
+                <field name="count_session"/>
+                <field name="count_session_draft"/>
+                <field name="count_session_confirmed"/>
+                <field name="count_session_produced"/>
+                <field name="count_session_late"/>
+                <field name="count_session_today"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div>
                             <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title mb16">
+                                <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <t t-esc="record.name.value"/>
+                                        <a type="object" name="action_view_sessions">
+                                            <field name="name"/>
+                                        </a>
                                     </div>
-                                    <t t-if="record.current_session_id">
-                                        <div class="badge badge-success o_kanban_inline_block">In Progress</div>
-                                    </t>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
@@ -28,16 +30,50 @@
                             <div class="container o_kanban_card_content">
                                 <div class="row">
                                     <div class="col-6 o_kanban_primary_left">
-                                        <button t-if="not record.current_session_id" class="btn btn-primary" name="action_session_open" type="object">Start Shift</button>
-                                        <button t-if="record.current_session_id" class="btn btn-secondary" name="action_session_close" type="object">Close</button>
+                                        <button class="btn btn-primary" name="action_view_session_today" type="object">
+                                            <span><t t-esc="record.count_session_today.value"/> Planned For Today</span>
+                                        </button>
+                                        <button class="btn btn-secondary" name="%(mrp_shift.open_view_shift_session)d" type="action">New Session</button>
                                     </div>
                                     <div class="col-6 o_kanban_primary_right">
-                                        <div t-if="record.last_session_closing_date.value" class="row">
-                                            <div class="col-6">
-                                                <span>Last Closing Date</span>
+                                       <div t-if="record.count_session_draft.raw_value &gt; 0" class="row">
+                                            <div class="col-9">
+                                                <a name="action_view_session_draft" type="object">
+                                                    To Confirm
+                                                </a>
                                             </div>
-                                            <div class="col-6">
-                                                <span><t t-esc="record.last_session_closing_date.value"/></span>
+                                            <div class="col-3">
+                                                <field name="count_session_draft"/>
+                                            </div>
+                                        </div>
+                                        <div t-if="record.count_session_confirmed.raw_value &gt; 0" class="row">
+                                            <div class="col-9">
+                                                <a name="action_view_session_confirmed" type="object">
+                                                    To Produce
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <field name="count_session_confirmed"/>
+                                            </div>
+                                        </div>
+                                        <div t-if="record.count_session_produced.raw_value &gt; 0" class="row">
+                                            <div class="col-9">
+                                                <a name="action_view_session_produced" type="object">
+                                                    To Close
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <field name="count_session_produced"/>
+                                            </div>
+                                        </div>
+                                        <div t-if="record.count_session_late.raw_value &gt; 0" class="row">
+                                            <div class="col-9">
+                                                <a name="action_view_session_late" type="object">
+                                                    Late
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <field name="count_session_late"/>
                                             </div>
                                         </div>
                                     </div>
@@ -50,10 +86,10 @@
                                             <span>View</span>
                                         </div>
                                         <div role="menuitem">
-                                            <a name="839" type="action">Sessions</a>
+                                            <a name="action_view_sessions" type="action">Sessions</a>
                                         </div>
                                         <div role="menuitem">
-                                            <a name="840" type="action">Manufacturing Orders</a>
+                                            <a name="action_view_orders" type="action">Manufacturing Orders</a>
                                         </div>
                                     </div>
                                     <div class="col-6 o_kanban_card_manage_section o_kanban_manage_new">
@@ -61,11 +97,14 @@
                                             <span>Reporting</span>
                                         </div>
                                         <div role="menuitem">
-                                            <a name="841" type="action">Orders</a>
+                                            <a name="841" type="action">By Orders</a>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="841" type="action">By Production Lines</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row" groups="mrp_shift.group_mrp_shift_manager">
+                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
                                     <div role="menuitem" class="col-12">
                                         <a type="edit">Settings</a>
                                     </div>
@@ -85,9 +124,9 @@
         <field name="arch" type="xml">
             <tree string="Shifts">
                 <field name="name" string="Shift"/>
+                <field name="code"/>
                 <field name="user_id"/>
                 <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
-		<field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -99,7 +138,7 @@
             <form string="Shift">
                 <sheet>
                     <label for="name" class="oe_edit_only"/>
-                    <h1><field name="name"/></h1>
+                    <h1><field name="name" class="oe_inline"/></h1>
                     <group>
                         <group>
                             <field name="code"/>
@@ -108,7 +147,6 @@
                         <group>
                             <field name="resource_calendar_id"/>
                             <field name="warehouse_id" groups="stock.group_stock_multi_warehouses" options="{'no_create': True}"/>
-                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         </group>
                     </group>
                     <notebook>
@@ -116,56 +154,52 @@
                             <field name="session_ids" nolabel="1" readonly="1">
                                 <tree>
                                     <field name="name"/>
-                                    <field name="start_at"/>
-                                    <field name="stop_at"/>
+                                    <field name="production_date"/>
                                     <field name="state"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="Other Information">
-                            <group>
-                                <group string="Technical">
-                                    <field name="sequence_id"/>
-                                </group>
-                                <group string="Sessions">
-                                    <field name="current_session_id"/>
-                                    <field name="last_session_id"/>
-                                    <field name="last_session_closing_date"/>
-                                </group>
-                            </group>
-                        </page>
+		    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id="view_shift_search" model="ir.ui.view">
-        <field name="name">mrp.shift.search</field>
-        <field name="model">mrp.shift</field>
-        <field name="arch" type="xml">
-            <search string="Search Shifts">
-                <field name="name"/>
-                <field name="employee_id"/>
-                <field name="partner_id" string="Issued By"/>
-                <group expand="0" name="group_by" string="Group By">
-                    <filter name="employee_id" string="Employee" context="{'group_by' : 'employee_id'}" />
-                    <filter name="partner_id" string="Issued By" context="{'group_by': 'partner_id'}"/>
-                </group>
-            </search>
+    <!--
+        <record id="view_shift_search" model="ir.ui.view">
+            <field name="name">mrp.shift.search</field>
+            <field name="model">mrp.shift</field>
+            <field name="arch" type="xml">
+                <search string="Search Shifts">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="partner_id" string="Issued By"/>
+                    <group expand="0" name="group_by" string="Group By">
+                        <filter name="employee_id" string="Employee" context="{'group_by' : 'employee_id'}" />
+                        <filter name="partner_id" string="Issued By" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    -->
+
+    <record id="open_view_shift_kanban" model="ir.actions.act_window">
+        <field name="name">Shifts Overview</field>
+        <field name="res_model">mrp.shift</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new manufacturing shift
+            </p>
         </field>
     </record>
 
-    <record id="open_view_shift_kanban" model="ir.actions.act_window">
-        <field name="name">Shifts</field>
-        <field name="res_model">mrp.shift</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">kanban,tree,form</field>
-    </record>
-
-    <menuitem name="Shifts"
-              parent="mrp.menu_mrp_root"
-              sequence="100"
-              id="menu_open_view_shift_kanban"
-              action="open_view_shift_kanban"/>
+    <menuitem
+        action="open_view_shift_kanban"
+        id="menu_open_view_shift_kanban"
+        parent="mrp.menu_mrp_root" sequence="0"
+        name="Overview"/>
 
 </odoo>

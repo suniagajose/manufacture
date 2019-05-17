@@ -4,16 +4,16 @@
 {
     "name": "Working Shift Management",
     "version": "12.0.1.0.0",
-              "vauxoo,"
-              "Odoo Community Association (OCA)",
+    "author": "Vauxoo, Odoo Community Association (OCA)",
     "website": "https://github.com/oca/mrp",
     "license": "AGPL-3",
     "category": "Manufacture",
     "depends": ["mrp"],
     "data": [
         "security/ir.model.access.csv",
-        "views/mrp_employee_view.xml",
+        "views/mrp_session_view.xml",
         "views/mrp_shift_view.xml",
+        "views/mrp_shift_template.xml",
     ],
     'installable': True
 }
